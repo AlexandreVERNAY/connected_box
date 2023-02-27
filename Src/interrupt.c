@@ -27,3 +27,11 @@ void TIM2_IRQHandler(void){
 //	[17.4.5]TIMx status register
 	TIM2->SR	&= ~TIM_SR_CC1IF;	// Clear TIM2 pending interuption
 }
+
+void USART2_IRQHandler(void){
+    GPIOA->ODR	|= GPIO_ODR_OD5;	// Turn on the user LED for debugging
+}
+
+void UART4_IRQHandler(void){
+	GPIOA->ODR	|= GPIO_ODR_OD5;	// Turn on the user LED for debugging
+}

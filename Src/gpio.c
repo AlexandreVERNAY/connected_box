@@ -7,7 +7,7 @@ void PA5_Init(void){
  * Configure GPIO Port A Pin 5
  */
 //	[6.3.10]RCC AHB1 peripheral clock enable register
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;	// Clock initialization for GPIOA and GPIOC
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;			// Clock initialization for GPIOA and GPIOC
 
 //	[7.4.1]GPIO port mode register
 	GPIOA->MODER |=  (OUTPUT_MODE << GPIO_MODER_MODE5_Pos);	// Set Port A Pin 5 as an Output
@@ -16,7 +16,7 @@ void PA5_Init(void){
 	GPIOA->OTYPER &= ~(PUPDR_UP << GPIO_OTYPER_OT5_Pos);	// Set Port A Pin 5 as pull up
 
 //	[7.4.6]GPIO port output data register
-	GPIOA->ODR	&= ~(1 << GPIO_ODR_OD5_Pos);	// Set Port A Pin 5 at LOW (off) by default
+	GPIOA->ODR	&= ~(1 << GPIO_ODR_OD5_Pos);		// Set Port A Pin 5 at LOW (off) by default
 }
 
 void PC13_Init(void){
@@ -24,7 +24,7 @@ void PC13_Init(void){
  * Configure GPIO Port C Pin 13
  */
 //	[6.3.10]RCC AHB1 peripheral clock enable register
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;	// Clock initialization for GPIOA and GPIOC
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;			// Clock initialization for GPIOA and GPIOC
 
 //	[7.4.1]GPIO port mode register
 	GPIOC->MODER |= (INPUT_MODE << GPIO_PUPDR_PUPD13_Pos);	// Set as input

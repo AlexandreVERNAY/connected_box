@@ -24,10 +24,9 @@ void TIM2_Init(void){
 //	[17.4.6]TIMx event generation register
     TIM2->EGR |= TIM_EGR_UG;	// Reset Timer 2 counter registers
 
-    TIM2->CR1 |= TIM_CR1_OPM;	// Enable one-pulse mode
-
 //	[17.4.1]TIMx control register 1
     TIM2->CR1 &= ~TIM_CR1_CEN;	// Disable Timer 2
+    TIM2->CR1 |= TIM_CR1_OPM;	// Enable one-pulse mode
 
 	NVIC_EnableIRQ(TIM2_IRQn);	// Enable interrupt for Timer 2
 }
