@@ -1,6 +1,7 @@
 #include <stm32f446xx.h>
 #include "main.h"
 #include "gpio.h"
+#include <stdio.h>
 
 void PA5_Init(void){
 /*

@@ -2,6 +2,10 @@
 #include "main.h"
 #include "usart.h"
 
+extern uint8_t *buffer;
+extern uint8_t size;
+extern uint8_t timeOut;
+
 void USART2_Init(void){
 /*
  * Configure USART2 using PA2(TX) and PA3(RX)
@@ -26,7 +30,6 @@ void USART2_Init(void){
 
 	USART2->CR1 |= USART_CR1_RXNEIE;			// Enable interrupt for Received data is ready to be read
 	NVIC_EnableIRQ(USART2_IRQn);				// Enable USART2 global Interrupt
-
 }
 
 void UART4_Init(void){
@@ -53,4 +56,25 @@ void UART4_Init(void){
 
 	UART4->CR1 |= USART_CR1_RXNEIE;				// Enable interrupt for Received data is ready to be read
 	NVIC_EnableIRQ(UART4_IRQn);					// Enable UART4 global Interrupt
+}
+
+void USART_TX(USART_TypeDef *USART, uint8_t *data){
+/*
+ * Transmit data over selected USART
+ */
+	for(; (*data != '\0'); data++){				// For every byte of data
+		USART->DR = *data;						// Send data
+		while ((USART->SR & USART_SR_TXE)==0);	// Wait for transmission to complete
+	}
+}
+
+void waitForTimeOut(void){
+/*
+ * Wait for Timer 2 time out
+ */
+	while(!timeOut);		// Wait for time out to be reached
+
+	buffer[size] = '\0';	// Set end of string in the buffer
+	timeOut = 0;			// Reset flag time out
+	size = 0;				// Reset buffer size
 }
