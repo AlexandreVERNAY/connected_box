@@ -1,5 +1,4 @@
 #include <stm32f446xx.h>
-#include <stdlib.h>
 
 #include "main.h"
 #include "gpio.h"
@@ -7,55 +6,61 @@
 #include "interrupt.h"
 #include "usart.h"
 #include "sim.h"
+#include "screen.h"
 
-uint8_t *buffer	= NULL;								// UART reception buffer
-uint8_t size	= 0;								// buffer's size
-uint8_t timeOut	= 0;								// Timer 2 time out
+uint8_t button = 0;
 
-uint8_t *command= NULL;								// Module command string
+struct USART_HANDLER usart2 = { .buffer = {'*'}, .size = 0, .timeOut = 0, .command = {'*'} };
+struct USART_HANDLER *SCREEN = &usart2;
 
-uint8_t SMS[]	= "SMS text\0";						// SMS text example
+struct USART_HANDLER uart4 = { .buffer = {'*'}, .size = 0, .timeOut = 0, .command = {'*'} };
+struct USART_HANDLER *SIM = &uart4;
 
-uint8_t ATE0[]	= "ATE0\r\0";						// Disable echo mode in SIM module
+extern uint8_t ATE0[];
+extern uint8_t CMGF[];
+extern uint8_t CMGD[];
 
-uint8_t CMGF[]	= "AT+CMGF=1\r\0";					// Enable text mode for SIM module
-uint8_t CMGD[]	= "AT+CMGD=,4\r\0";					// Erase all messages stored in SIM
-
-uint8_t CMGR[] 	= "AT+CMGR=0,0\r\0";				// Read SMS Message
-
-uint8_t CMGS[] 	= "AT+CMGS=\"+33784961263\"\r\0";	// Write SMS to GSM number in text Mode
-uint8_t EoLSMS[]= { '\x1A', '\0' };					// End of line SMS character
+void waitForButtonPressed(){
+	button = 0;					// Reset button flag
+	GPIOA->ODR |= GPIO_ODR_OD5;	// Turn on  the user LED for debugging
+	while(!button);
+}
 
 int main(void){
+//	STM32 initialization
 	PA5_Init();
 	PC13_Init();
 	TIM2_Init();
-
+	TIM4_Init();
 	USART2_Init();
 	UART4_Init();
 
-	buffer	= malloc(64*sizeof(uint8_t));
-	command	= malloc(16*sizeof(uint8_t));
+//	Waits 30 seconds for modules initialization
+	setTimeout(TIM4, 30000);
+	launchTimer(TIM4);
+	waitForTimeOut(SIM);
 
-	setTimeout(30000);
-	launchTimer();
-	waitForTimeOut();
+//	Timers time out delay configuration
+	setTimeout(TIM4, 1000);
+	setTimeout(TIM2, 5000);
 
-	setTimeout(500);
+//	SIM module configuration
 	SIM_sendCommand(ATE0);
-	extractCommand(LINE_1);
-
 	SIM_sendCommand(CMGF);
-	extractCommand(LINE_1);
+	SIM_sendCommand(CMGD);
 
-	SIM_sendCommand(CMGR);
-	extractCommand(LINE_2);
+	while(1){
+		waitForButtonPressed();		// The SCREEN module wants to confirm a code
 
-	SIM_sendCommand(CMGS);
-	SIM_sendCommand(SMS);
-	setTimeout(4000);
-	SIM_sendCommand(EoLSMS);
-	extractCommand(LINE_1);
+		launchTimer(TIM2);
+		waitForTimeOut(SCREEN);
+		SCREEN_commandInterpreter();
+
+		waitForButtonPressed();		// The SIM module has received an SMS
+
+		SIM_readSMS();
+		SIM_commandInterpreter();
+	}
 
 	return 0;
 }

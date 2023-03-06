@@ -1,7 +1,6 @@
 #include <stm32f446xx.h>
 #include "main.h"
 #include "gpio.h"
-#include <stdio.h>
 
 void PA5_Init(void){
 /*
@@ -11,10 +10,10 @@ void PA5_Init(void){
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;			// Clock initialization for GPIOA and GPIOC
 
 //	[7.4.1]GPIO port mode register
-	GPIOA->MODER |=  (OUTPUT_MODE << GPIO_MODER_MODE5_Pos);	// Set Port A Pin 5 as an Output
+	GPIOA->MODER |=  (OUTPUT_MODE << GPIO_MODER_MODE5_Pos);	// Set Port A Pin 5 as an output
 
 //	[7.4.2]GPIO port output type register
-	GPIOA->OTYPER &= ~(PUPDR_UP << GPIO_OTYPER_OT5_Pos);	// Set Port A Pin 5 as pull up
+	GPIOA->OTYPER &= ~(PUPDR_UP << GPIO_OTYPER_OT5_Pos);	// Set Port A Pin 5 as pull-up
 
 //	[7.4.6]GPIO port output data register
 	GPIOA->ODR	&= ~(1 << GPIO_ODR_OD5_Pos);		// Set Port A Pin 5 at LOW (off) by default
@@ -43,10 +42,10 @@ void PC13_Init(void){
 	EXTI->IMR |= EXTI_IMR_IM13;						// Disable interrupt request mask on EXTI line 13
 
 //	[10.3.3]Rising trigger selection register
-	EXTI->FTSR |=  EXTI_FTSR_TR13;					// Enable EXTI line 13 trigger on Falling edge
+	EXTI->FTSR |=  EXTI_FTSR_TR13;					// Enable EXTI line 13 trigger on falling edge
 
 //	[10.3.4]Falling trigger selection register
-	EXTI->RTSR &= ~EXTI_RTSR_TR13;					// Disable EXTI line 13 trigger on Rising edge
+	EXTI->RTSR &= ~EXTI_RTSR_TR13;					// Disable EXTI line 13 trigger on rising edge
 
 //	[6.3.14]RCC APB2 peripheral clock enable register
 	RCC->APB2ENR &= ~RCC_APB2ENR_SYSCFGEN;			// Disable System configuration controller

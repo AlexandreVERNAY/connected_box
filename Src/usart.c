@@ -2,10 +2,6 @@
 #include "main.h"
 #include "usart.h"
 
-extern uint8_t *buffer;
-extern uint8_t size;
-extern uint8_t timeOut;
-
 void USART2_Init(void){
 /*
  * Configure USART2 using PA2(TX) and PA3(RX)
@@ -37,7 +33,7 @@ void UART4_Init(void){
  * Configure UART4 using PA0(TX) and PA1(RX)
  */
 //	[6.3.13]Peripheral clock enable register
-	RCC->APB1ENR |= RCC_APB1ENR_UART4EN;		// Enable USART2 clock
+	RCC->APB1ENR |= RCC_APB1ENR_UART4EN;		// Enable UART4 clock
 
 //	[7.4.1]Port mode register
 	GPIOA->MODER |= (ALTERN_MODE << GPIO_MODER_MODER0_Pos);	// Set Alternate Function mode for Pin PA0
@@ -63,18 +59,18 @@ void USART_TX(USART_TypeDef *USART, uint8_t *data){
  * Transmit data over selected USART
  */
 	for(; (*data != '\0'); data++){				// For every byte of data
-		USART->DR = *data;						// Send data
+		USART->DR = *data;						// Send data over USART
 		while ((USART->SR & USART_SR_TXE)==0);	// Wait for transmission to complete
 	}
 }
 
-void waitForTimeOut(void){
+void waitForTimeOut(struct USART_HANDLER *usart){
 /*
- * Wait for Timer 2 time out
+ * Wait for Timer time out
  */
-	while(!timeOut);		// Wait for time out to be reached
+	while(!usart->timeOut);						// Wait for time out to be reached
 
-	buffer[size] = '\0';	// Set end of string in the buffer
-	timeOut = 0;			// Reset flag time out
-	size = 0;				// Reset buffer size
+	usart->buffer[usart->size] = '\0';			// Set end of string in the buffer
+	usart->timeOut = 0;							// Reset flag time out
+	usart->size = 0;							// Reset buffer size
 }
