@@ -6,12 +6,14 @@
 #define LINE_3	3
 #define LINE_4	4
 
+void SIM_configure(void);
+
 void SIM_sendCommand(uint8_t *ATcommand);
 
 void SIM_sendSMS(uint8_t *SMS);
 void SIM_readSMS();
 
-void extractCommand(uint8_t commandLine);
+void SIM_extractCommand(uint8_t commandLine);
 
 void SIM_commandInterpreter(void);
 

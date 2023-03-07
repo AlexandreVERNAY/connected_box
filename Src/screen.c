@@ -1,6 +1,7 @@
 #include <stm32f446xx.h>
 #include "main.h"
 #include "screen.h"
+#include "timer.h"
 #include "usart.h"
 #include "sim.h"
 
@@ -15,27 +16,30 @@ void SCREEN_sendCommand(uint8_t *command){
 
 void SCREEN_commandInterpreter(void){
 /*
- * Indicates if the SCREEN buffer contains a known command
+ * Verify and execute the command from the SCREEN module
  */
-	switch(SCREEN->buffer[0]){
+	launchTimer(TIM2);						// Limit listening time to the SCREEN module
+	waitForTimeOut(SCREEN);					// Wait for the SCREEN module's response to be entirely received
+
+	switch(SCREEN->buffer[0]){				// Depending on the command type (first byte in command)
 		case 0x17:							// Verify the code entered by the user on the screen
-			extractCode();					// Extract code from buffer to command
-			SIM_sendSMS(SCREEN->command);	// Send SCREEN command via SIM module
+			SCREEN_extractCode();			// Extract code from buffer to command
+			SIM_sendSMS(SCREEN->command);	// Send the code via SIM module
 		break;
 	}
 }
 
-void extractCode(void){
+void SCREEN_extractCode(void){
 /*
- * Extract command from SCREEN module buffer
+ * Extract user code from SCREEN module buffer
  */
 	uint8_t *buff = SCREEN->buffer;			// Pointer to first byte in buffer
 	uint8_t *comm = SCREEN->command;		// Pointer to first byte in command
 
-	++buff;									// Ignores first byte containing command type
+	++buff;									// Ignore the first byte containing command type
 
 	for(; *buff != '\0'; ++buff, ++comm){	// While buffer end of string isn't reached
-		*comm = (*buff);					// Copy buffer content to command
+		*comm = *buff;						// Copy buffer content to command
 	}
 	*comm = '\0';							// Set end of string character
 }

@@ -3,8 +3,6 @@
 #include "interrupt.h"
 #include "usart.h"
 
-extern uint8_t button;
-
 extern struct USART_HANDLER *SCREEN;
 extern struct USART_HANDLER *SIM;
 
@@ -12,10 +10,8 @@ void EXTI15_10_IRQHandler(void){
 /*
  * Interruption function for PC13 (Button pressed)
  */
-	button = 1;						// Set button flag
-
-	GPIOA->ODR	&= ~GPIO_ODR_OD5;	// Turn off the user LED for debugging
-
+//	[7.4.6]GPIO port output data register
+	GPIOA->ODR ^= GPIO_ODR_OD5;		// Toggle the user LED for debugging
 //	[10.3.6]Pending register
 	EXTI->PR	|= EXTI_PR_PR13;	// Clear PC13 pending interruption
 }
@@ -24,7 +20,7 @@ void TIM2_IRQHandler(void){
 /*
  * Interruption function for TIM2 (SCREEN module response time out)
  */
-	SCREEN->timeOut = 1;			// Set SCREEN time out flag
+	SCREEN->timeOut = 1;			// Set SCREEN module time out flag
 
 //	[17.4.5]TIMx status register
 	TIM2->SR	&= ~TIM_SR_CC1IF;	// Clear TIM2 pending interruption
@@ -34,7 +30,7 @@ void TIM4_IRQHandler(void){
 /*
  * Interruption function for TIM4 (SIM module response time out)
  */
-	SIM->timeOut = 1;				// Set SIM time out flag
+	SIM->timeOut = 1;				// Set SIM module time out flag
 
 //	[17.4.5]TIMx status register
 	TIM4->SR	&= ~TIM_SR_CC1IF;	// Clear TIM4 pending interruption

@@ -5,7 +5,7 @@ void SCREEN_sendCommand(uint8_t *command);
 
 void SCREEN_commandInterpreter(void);
 
-void extractCode(void);
+void SCREEN_extractCode(void);
 
 
 #endif /* SCREEN_H_ */
