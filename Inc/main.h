@@ -16,5 +16,9 @@
 	#define GPIO_AFR7 	7U
 	#define GPIO_AFR8 	8U
 
+	#define TIMEOUT_DEFAULT		3000
+	#define TIMEOUT_EXTENDED	5000
+	#define TIMEOUT_INIT		30000
+
 
 #endif /* MAIN_H_ */

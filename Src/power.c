@@ -2,11 +2,9 @@
 #include "main.h"
 #include "power.h"
 
-void enterStandbyMode(void){
+void enterNormalSleep(void){
 /*
- * Configure low power mode to standby mode
+ * Enter normal sleep
  */
-	PWR->CR |= PWR_CR_LPDS;		// Select Deep Sleep
-	PWR->CR |= PWR_CR_PDDS;		// Select Standby mode
-	__WFI();					// Wait For Interrupt
+	__WFI();	// Wait For Interrupt
 }

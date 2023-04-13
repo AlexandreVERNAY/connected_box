@@ -1,6 +1,8 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+void TIMx_Init(TIM_TypeDef *TIMx);
+
 void TIM2_Init(void);
 void TIM4_Init(void);
 
