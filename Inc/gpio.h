@@ -5,4 +5,4 @@ void PA5_Init(void);
 void PC13_Init(void);
 
 
-#endif
+#endif /* GPIO_H_ */

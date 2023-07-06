@@ -8,8 +8,7 @@
 
 extern struct USART_Handler *SCREEN;
 
-uint8_t CODE_CONFIRM_CODE[]		= "Confirmez vous ce code ?\r\n";
-uint8_t CODE_CONFIRM_CHOICE[]	= "\r\nEnvoyez code suivi de oui pour valider, non pour refuser.";
+extern uint8_t *USART_messageBuffer;
 
 void SCREEN_sendCommand(uint8_t *command){
 /*
@@ -18,18 +17,18 @@ void SCREEN_sendCommand(uint8_t *command){
 	USART_TX(USART1, command);
 }
 
-void SCREEN_executeCommand(void){//uint8_t *currPage
+void SCREEN_executeCommand(void){
 /*
  * Verify and execute the command from the SCREEN module
  */
-	launchTimer(TIM2);		// Limit listening time to the SCREEN module
-	waitForTimeOut(SCREEN);	// Wait for the SCREEN module's response to be entirely received
-	SCREEN_extractCode();	// Extract code from buffer to command
+	launchTimer(TIM2);							// Limit listening time to the SCREEN module
+	waitForTimeOut(SCREEN);						// Wait for the SCREEN module's response to be entirely received
+	SCREEN_extractCode();						// Extract code from buffer to command
 
 	switch(SCREEN->buffer[0]){					// Depending on the command type (first byte in command)
 		case COMMAND_VERIFY_CODE:				// Verify the code entered by the user on the screen
-			createMessage(SCREEN, CODE_CONFIRM_CODE, SCREEN->command, CODE_CONFIRM_CHOICE);
-			SIM_sendSMS(SCREEN->buffer);		// Send the code via SIM module
+			createMessage((uint8_t*)CODE_CONFIRM_CODE, SCREEN->command, (uint8_t*)CODE_CONFIRM_CHOICE);
+			SIM_sendSMS(USART_messageBuffer);	// Send the code via SIM module
 		break;
 	}
 }

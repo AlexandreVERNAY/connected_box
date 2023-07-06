@@ -3,11 +3,13 @@
 
 #define BUFFER_SIZE		128
 #define COMMAND_SIZE	16
+#define STATUS_SIZE		8
 
 struct USART_Handler{
 	uint8_t buffer[BUFFER_SIZE];	// Data reception buffer
 	uint8_t size;					// Buffer's size
 	uint8_t timeOut;				// Timer time out flag
+	uint8_t response[STATUS_SIZE];	// Module command response
 	uint8_t command[COMMAND_SIZE];	// Module command string
 };
 
@@ -18,7 +20,7 @@ void USART_TX(USART_TypeDef *USART, uint8_t *data);
 
 void waitForTimeOut(struct USART_Handler *usart);
 
-void createMessage(struct USART_Handler *usart, uint8_t *headMessage, uint8_t *message, uint8_t *tailMessage);
+void createMessage(uint8_t *headMessage, uint8_t *message, uint8_t *tailMessage);
 
 
 #endif /* USART_H_ */

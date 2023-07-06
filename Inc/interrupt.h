@@ -1,7 +1,7 @@
 #ifndef INTERRUPT_H_
 #define INTERRUPT_H_
 
-void EXTI15_10_IRQHandler(void);
+//void EXTI15_10_IRQHandler(void);
 
 void TIM2_IRQHandler(void);
 void TIM4_IRQHandler(void);
